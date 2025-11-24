@@ -6,12 +6,33 @@ namespace FinalProyect.Models;
 public class Documento
 {
     public int Id { get; set; }
-    public string TipoDocumento { get; set; } = String.Empty;
-    [Required(ErrorMessage = "This field is required to continue.")]
-    [MaxLength(50, ErrorMessage = "The Name must not exceed 50 characters.")]
-    public string NumeroDocumento { get; set; } = String.Empty;
-    [MaxLength(50, ErrorMessage = "The Name must not exceed 50 characters.")]
-    public DateTime FechaSubida { get; set; }
-    public ICollection<ReciboIngreso>? RecibosIngresos { get; set; }
+
+    [Required]
+    [MaxLength(50)]
+    public string TipoDocumento { get; set; } = string.Empty;
+
+    [Required]
+    [MaxLength(150)]
+    public string NombreArchivo { get; set; } = string.Empty;
+
+    [Required]
+    public string RutaArchivo { get; set; } = string.Empty;
+
+    [MaxLength(10)]
+    public string? Extension { get; set; }
+
+    public DateTime? FechaSubida { get; set; }
+
+    public int? DerechoEnterramientoId { get; set; }
+    public DerechoEnterramiento? DerechoEnterramiento { get; set; }
+
+    public int? DerechoConstruccionId { get; set; }
+    public DerechoConstruccion? DerechoConstruccion { get; set; }
+
+    public int? ReciboIngresoId { get; set; }
+    public ReciboIngreso? ReciboIngreso { get; set; }
+
+    public int? RegistroDocumentacionId { get; set; }
+    public RegistroDocumentacion? RegistroDocumentacion { get; set; }
 
 }

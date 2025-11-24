@@ -11,12 +11,9 @@ public class Historial
     [Required(ErrorMessage = "This field is required to continue.")]
     public int ReciboIngresoId { get; set; }
     public ReciboIngreso? ReciboIngreso { get; set; }
-    public string usuarioId { get; set; } = String.Empty;
+    public string UsuarioId { get; set; } = String.Empty;
     [Required(ErrorMessage = "This field is required to continue.")]
     public ApplicationUser? Usuario { get; set; }
-    public string ProcesoId { get; set; }
-    public Proceso? Proceso { get; set; }
     public DateTime FechaRegistro { get; set; } = DateTime.Now;
     public string? Descripcion { get; set; } = String.Empty;
-
 }
