@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using FinalProyect.Models;
+using FinalProyect.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +49,17 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+builder.Services.AddScoped<SolicitanteService>();
+builder.Services.AddScoped<HistorialService>();
+builder.Services.AddScoped<ReciboIngresoService>();
+builder.Services.AddScoped<DocumentoService>();
+builder.Services.AddScoped<ExpedicionCertificacionService>();
+builder.Services.AddScoped<DerechoConstruccionService>();
+builder.Services.AddScoped<DerechoEnterramientoService>();
+builder.Services.AddScoped<ConsultaIngresoService>();
+builder.Services.AddScoped<ArrendamientoTerrenoService>();
+builder.Services.AddScoped<RegistroDocumentacionService>();
 
 var app = builder.Build();
 
