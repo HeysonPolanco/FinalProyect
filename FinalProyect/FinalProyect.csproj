@@ -9,10 +9,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.26.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Components\Pages\ExpedicionCertificacionPages\" />
+    <Folder Include="Components\Pages\ConsultaIngresoPages\" />
+    <Folder Include="Components\Pages\HistorialPages\" />
+    <Folder Include="Components\Pages\RegistroDocumentacionPages\" />
   </ItemGroup>
 
 </Project>

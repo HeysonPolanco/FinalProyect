@@ -18,6 +18,7 @@ public class DerechoConstruccionService
         return await _context.DerechoConstruccion
             .Include(d => d.Usuario)
             .Include(d => d.Solicitante)
+            .Include(d => d.Documentos)
             .ToListAsync();
     }
 
@@ -26,13 +27,15 @@ public class DerechoConstruccionService
         return await _context.DerechoConstruccion
             .Include(d => d.Usuario)
             .Include(d => d.Solicitante)
+            .Include(d => d.Documentos)
             .FirstOrDefaultAsync(d => d.Id == id);
     }
 
-    public async Task<bool> CrearAsync(DerechoConstruccion derecho)
+    public async Task<int> Crear(DerechoConstruccion derecho)
     {
         _context.DerechoConstruccion.Add(derecho);
-        return await _context.SaveChangesAsync() > 0;
+        await _context.SaveChangesAsync();
+        return derecho.Id;
     }
 
     public async Task<bool> Actualizar(DerechoConstruccion derecho)

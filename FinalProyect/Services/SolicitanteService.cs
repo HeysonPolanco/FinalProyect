@@ -22,8 +22,17 @@ public class SolicitanteService
         return await _context.Solicitantes.FindAsync(id);
     }
 
+    public async Task<Solicitante?> BuscarPorCedula(string cedula)
+    {
+        return await _context.Solicitantes
+            .FirstOrDefaultAsync(s => s.Cedula == cedula);
+    }
+
     public async Task<bool> Crear(Solicitante solicitante)
     {
+        if (await BuscarPorCedula(solicitante.Cedula) != null)
+            return false;
+
         _context.Solicitantes.Add(solicitante);
         return await _context.SaveChangesAsync() > 0;
     }

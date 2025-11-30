@@ -49,4 +49,15 @@ public class ArrendamientoTerrenoService
         _context.ArrendamientoTerreno.Remove(arrendamiento);
         return await _context.SaveChangesAsync() > 0;
     }
+    public async Task<List<ArrendamientoTerreno>> ObtenerVencimientos(int diasAviso = 5)
+    {
+        var hoy = DateTime.Today;
+        var avisoLimite = hoy.AddDays(diasAviso);
+
+        return await _context.ArrendamientoTerreno
+            .Include(a => a.Solicitante)
+            .Where(a => a.FechaFin <= avisoLimite)
+            .OrderBy(a => a.FechaFin)
+            .ToListAsync();
+    }
 }

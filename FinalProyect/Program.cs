@@ -61,6 +61,8 @@ builder.Services.AddScoped<ConsultaIngresoService>();
 builder.Services.AddScoped<ArrendamientoTerrenoService>();
 builder.Services.AddScoped<RegistroDocumentacionService>();
 
+builder.Services.AddScoped<BlobStorageService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

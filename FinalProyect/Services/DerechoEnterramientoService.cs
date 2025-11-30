@@ -17,6 +17,8 @@ public class DerechoEnterramientoService
         return await _context.DerechoEnterramiento
             .Include(d => d.Usuario)
             .Include(d => d.Solicitante)
+            .Include(d => d.ReciboIngreso)
+            .Include(d => d.Documentos)
             .ToListAsync();
     }
 
@@ -25,13 +27,15 @@ public class DerechoEnterramientoService
         return await _context.DerechoEnterramiento
             .Include(d => d.Usuario)
             .Include(d => d.Solicitante)
+            .Include(d => d.Documentos)
             .FirstOrDefaultAsync(d => d.Id == id);
     }
 
-    public async Task<bool> Crear(DerechoEnterramiento derecho)
+    public async Task<int> Crear(DerechoEnterramiento derecho)
     {
         _context.DerechoEnterramiento.Add(derecho);
-        return await _context.SaveChangesAsync() > 0;
+        await _context.SaveChangesAsync();
+        return derecho.Id;
     }
 
     public async Task<bool> Actualizar(DerechoEnterramiento derecho)
