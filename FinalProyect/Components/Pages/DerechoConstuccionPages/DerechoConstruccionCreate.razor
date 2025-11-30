@@ -1,0 +1,124 @@
+﻿@page "/construccion/create"
+@rendermode InteractiveServer
+
+@using FinalProyect.Models
+@using FinalProyect.Services
+@using FinalProyect.Data
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Components.Forms
+
+@inject DerechoConstruccionService ConstruccionService
+@inject SolicitanteService SolicitanteService
+@inject DocumentoService DocumentoService
+@inject NavigationManager Nav
+@inject UserManager<ApplicationUser> UserManager
+@inject AuthenticationStateProvider AuthProvider
+
+<h3 class="mb-4 text-primary fw-bold">Registrar Derecho a Construcción</h3>
+
+<div class="card shadow p-4">
+
+    <EditForm FormName="ConstruccionForm" Model="@Modelo" OnValidSubmit="Guardar">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <h5 class="text-primary mb-3">Datos del Solicitante</h5>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Nombre completo *</label>
+            <InputText class="form-control" @bind-Value="SolicitanteProceso.NombreCompleto" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Cédula *</label>
+            <InputText class="form-control" @bind-Value="SolicitanteProceso.Cedula" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Teléfono</label>
+            <InputText class="form-control" @bind-Value="SolicitanteProceso.Telefono" />
+        </div>
+
+        <hr />
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">Fecha *</label>
+                <InputDate class="form-control" @bind-Value="Modelo.Fecha" />
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">Hora *</label>
+                <InputText class="form-control" @bind-Value="HoraTexto" placeholder="HH:mm" />
+            </div>
+        </div>
+
+        <hr />
+
+        <h5 class="text-primary mb-3">Recibo del inspector (opcional)</h5>
+
+        <InputFile OnChange="OnReciboInspectorSelected" class="form-control" />
+
+        <hr />
+
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-save"></i> Guardar y generar recibo
+        </button>
+
+    </EditForm>
+
+</div>
+
+@code {
+
+    private DerechoConstruccion Modelo { get; set; } = new();
+    private Solicitante SolicitanteProceso { get; set; } = new();
+
+    private IBrowserFile? ReciboInspectorFile;
+    private string HoraTexto = "";
+
+    private void OnReciboInspectorSelected(InputFileChangeEventArgs e)
+        => ReciboInspectorFile = e.File;
+
+    private async Task<string> GetUserId()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        return authState.User.Identity?.IsAuthenticated == true
+            ? UserManager.GetUserId(authState.User)
+            : "";
+    }
+
+    private async Task Guardar()
+    {
+        // Usuario que registró el proceso
+        Modelo.UsuarioId = await GetUserId();
+
+        // Crear o usar solicitante
+        if (SolicitanteProceso.Id == 0)
+            await SolicitanteService.Crear(SolicitanteProceso);
+
+        Modelo.SolicitanteId = SolicitanteProceso.Id;
+
+        // Hora
+        if (!string.IsNullOrWhiteSpace(HoraTexto))
+            Modelo.Hora = TimeSpan.Parse(HoraTexto);
+
+
+        Modelo.Monto = ProcessPrices.GetPrice(ProcessType.DerechoConstruccion);
+
+        await ConstruccionService.Crear(Modelo);
+
+        if (ReciboInspectorFile != null)
+        {
+            using var stream = ReciboInspectorFile.OpenReadStream();
+            await DocumentoService.SubirDocumentoAsync(
+                stream,
+                ReciboInspectorFile.Name,
+                DocumentType.ReciboInspector,
+                construccionId: Modelo.Id
+            );
+        }
+
+        Nav.NavigateTo($"/recibo/create/{Modelo.Id}?proceso=construccion");
+    }
+}

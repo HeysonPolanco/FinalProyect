@@ -1,0 +1,51 @@
+﻿@page "/arrendamiento/vencimientos"
+@rendermode InteractiveServer
+
+@inject ArrendamientoTerrenoService ArrService
+
+<h3 class="text-danger mb-4">Arrendamientos Vencidos</h3>
+
+@if (Lista.Count == 0)
+{
+    <div class="alert alert-success">
+        No hay arrendamientos vencidos 🎉.
+    </div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead class="table-danger">
+            <tr>
+                <th>ID</th>
+                <th>Solicitante</th>
+                <th>Fecha inicio</th>
+                <th>Fecha fin</th>
+                <th>Ubicación</th>
+                <th>Metros</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Lista)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Solicitante.NombreCompleto</td>
+                    <td>@item.FechaInicio.ToString("dd/MM/yyyy")</td>
+                    <td class="text-danger fw-bold">@item.FechaFin.ToString("dd/MM/yyyy")</td>
+                    <td>@item.Ubicacion</td>
+                    <td>@item.MetrosCuadrados</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    List<ArrendamientoTerreno> Lista = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Lista = await ArrService.ObtenerVencimientos();
+    }
+}

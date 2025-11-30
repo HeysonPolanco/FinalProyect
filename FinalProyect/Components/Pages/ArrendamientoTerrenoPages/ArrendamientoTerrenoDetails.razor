@@ -1,0 +1,65 @@
+﻿@page "/arrendamiento/details/{Id:int}"
+@rendermode InteractiveServer
+
+@using FinalProyect.Models
+@inject ArrendamientoTerrenoService ArrService
+@inject NavigationManager Nav
+
+<h3 class="text-primary mb-4">Detalles del Arrendamiento</h3>
+
+@if (Modelo == null)
+{
+    <div class="alert alert-warning">Cargando...</div>
+    return;
+}
+
+<div class="card shadow-sm p-4">
+
+    <h5 class="text-primary">Datos del Solicitante</h5>
+    <p><strong>Nombre:</strong> @Modelo.Solicitante?.NombreCompleto</p>
+    <p><strong>Cédula:</strong> @Modelo.Solicitante?.Cedula</p>
+    <p><strong>Teléfono:</strong> @Modelo.Solicitante?.Telefono</p>
+
+    <hr />
+
+    <h5 class="text-primary">Datos del Arrendamiento</h5>
+    <p><strong>Fecha inicio:</strong> @Modelo.FechaInicio.ToString("dd/MM/yyyy")</p>
+    <p><strong>Fecha fin:</strong> @Modelo.FechaFin.ToString("dd/MM/yyyy")</p>
+    <p><strong>Metros cuadrados:</strong> @Modelo.MetrosCuadrados</p>
+    <p><strong>Ubicación:</strong> @Modelo.Ubicacion</p>
+
+    <p>
+        <strong>Notificar vencimiento:</strong>
+        @(Modelo.NotificarVencimiento ? "Sí" : "No")
+    </p>
+
+    <hr />
+
+    <button class="btn btn-warning" @onclick="Editar">
+        <i class="fas fa-edit"></i> Editar
+    </button>
+
+    <button class="btn btn-success ms-2" @onclick="Recibo">
+        <i class="fas fa-receipt"></i> Generar Recibo
+    </button>
+
+    <button class="btn btn-secondary ms-2" @onclick="Volver">
+        <i class="fas fa-arrow-left"></i> Volver
+    </button>
+
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    ArrendamientoTerreno? Modelo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Modelo = await ArrService.ObtenerPorId(Id);
+    }
+
+    private void Editar() => Nav.NavigateTo($"/arrendamiento/edit/{Id}");
+    private void Recibo() => Nav.NavigateTo($"/recibo/create/{Id}?proceso=arrendamiento");
+    private void Volver() => Nav.NavigateTo("/arrendamiento");
+}
+

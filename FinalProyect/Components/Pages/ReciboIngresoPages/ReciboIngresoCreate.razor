@@ -1,0 +1,258 @@
+﻿@page "/recibo/create/{ProcesoId:int}"
+@rendermode InteractiveServer
+
+@using FinalProyect.Models
+@using FinalProyect.Services
+@using Microsoft.AspNetCore.Components.Forms
+
+@inject DerechoEnterramientoService EnterramientoService
+@inject ReciboIngresoService ReciboService
+@inject DocumentoService DocumentoService
+@inject BlobStorageService BlobService
+@inject NavigationManager Nav
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h4 text-gray-800">Generar Recibo de Ingresos</h1>
+
+        <button class="btn btn-secondary" @onclick="Volver">
+            <i class="fas fa-arrow-left"></i> Volver
+        </button>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Error))
+    {
+        <div class="alert alert-danger">@Error</div>
+    }
+
+    @if (!string.IsNullOrEmpty(Mensaje))
+    {
+        <div class="alert alert-success">@Mensaje</div>
+    }
+
+    @if (Proceso == null)
+    {
+        <div class="alert alert-warning">
+            No se pudo cargar la información del proceso.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+
+            <!-- ============================
+                 CARD INFORMACIÓN GENERAL
+            ================================ -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <strong>Datos del Solicitante</strong>
+                    </div>
+
+                    <div class="card-body">
+                        <p><strong>Nombre:</strong> @Proceso.Solicitante?.NombreCompleto</p>
+                        <p><strong>Cédula:</strong> @Proceso.Solicitante?.Cedula</p>
+                        <p><strong>Teléfono:</strong> @Proceso.Solicitante?.Telefono</p>
+
+                        <hr />
+
+                        <p><strong>Proceso:</strong> Derecho a Enterramiento</p>
+                        <p><strong>Fecha:</strong> @Proceso.Fecha.ToString("dd/MM/yyyy")</p>
+                        <p><strong>Hora:</strong> @Proceso.Hora.ToString(@"hh\:mm")</p>
+
+                        <hr />
+
+                        <button class="btn btn-success w-100" @onclick="GuardarRecibo">
+                            <i class="fas fa-save"></i> Guardar y generar recibo
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================
+                 CARD DISEÑO DEL RECIBO
+            ================================ -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-dark text-white text-center">
+                        <strong>RECIBO DE INGRESOS</strong>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="row text-center mb-4">
+                            <div class="col-4">
+                                <strong>Día</strong>
+                                <div>@DateTime.Now.Day</div>
+                            </div>
+                            <div class="col-4">
+                                <strong>Mes</strong>
+                                <div>@DateTime.Now.Month.ToString("00")</div>
+                            </div>
+                            <div class="col-4">
+                                <strong>Año</strong>
+                                <div>@DateTime.Now.Year</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>No. Recibo:</strong>
+                            <div class="border p-2">@Modelo.NumeroRecibo</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>He recibido de:</strong>
+                            <div class="border p-2">@Proceso.Solicitante?.NombreCompleto</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>La suma de:</strong>
+                            <div class="border p-2">@Modelo.MontoEnLetras</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>RD$:</strong>
+                            <div class="border p-2">@Modelo.Monto</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Forma de pago:</strong>
+                            <div class="border p-2">@Modelo.FormaPago</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Por concepto de:</strong>
+                            <div class="border p-2">@Modelo.Concepto</div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <strong>LIC. LUZ ATHANY UREÑA MERCEDES</strong>
+                            <br />
+                            Tesorera Municipal
+                        </div>
+
+                        <hr />
+
+                        <!-- ============================
+                             SUBIR FOTO DEL RECIBO SELLADO
+                        ================================ -->
+                        @if (ReciboGuardado)
+                        {
+                            <h5 class="text-primary mt-3">Subir foto del recibo firmado</h5>
+
+                            <InputFile OnChange="OnFotoSeleccionada" />
+
+                            <button class="btn btn-info mt-3" @onclick="SubirFotoSellado">
+                                <i class="fas fa-upload"></i> Guardar foto del recibo firmado
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    }
+</div>
+
+@code {
+
+    [Parameter] public int ProcesoId { get; set; }
+
+    private ReciboIngreso Modelo { get; set; } = new();
+    private DerechoEnterramiento? Proceso { get; set; }
+
+    private IBrowserFile? FotoSellado;
+    private bool ReciboGuardado = false;
+    private string Mensaje = "";
+    private string Error = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        Proceso = await EnterramientoService.ObtenerPorId(ProcesoId);
+
+        if (Proceso == null)
+        {
+            Error = "No se encontró el proceso relacionado.";
+            return;
+        }
+
+        Modelo.SolicitanteId = Proceso.SolicitanteId;
+        Modelo.Solicitante = Proceso.Solicitante!;
+        Modelo.Documentos = new List<Documento>();
+
+        Modelo.Concepto = "Derecho a enterramiento";
+        Modelo.Monto = ProcessPrices.GetPrice(ProcessType.DerechoEnterramiento);
+        Modelo.MontoEnLetras = ProcessPrices.GetPriceText((int)Modelo.Monto);
+        Modelo.FormaPago = "Efectivo";
+        Modelo.NumeroRecibo = GenerarNumeroRecibo();
+    }
+
+    private string GenerarNumeroRecibo()
+    {
+        Random rnd = new();
+        return rnd.Next(1000, 9999).ToString();
+    }
+
+    private async Task GuardarRecibo()
+    {
+        try
+        {
+            if (Modelo.Id == 0)
+            {
+                int id = await ReciboService.Crear(Modelo);
+                Modelo.Id = id;
+            }
+
+            ReciboGuardado = true;
+            Mensaje = "Recibo generado correctamente.";
+        }
+        catch (Exception ex)
+        {
+            Error = "Error al generar recibo: " + ex.Message;
+        }
+    }
+
+    private void OnFotoSeleccionada(InputFileChangeEventArgs e)
+    {
+        FotoSellado = e.File;
+    }
+
+    private async Task SubirFotoSellado()
+    {
+        if (Modelo.Id == 0)
+        {
+            Error = "Primero debe guardar el recibo.";
+            return;
+        }
+
+        if (FotoSellado == null)
+        {
+            Error = "Debe seleccionar una foto.";
+            return;
+        }
+
+        using var stream = FotoSellado.OpenReadStream(long.MaxValue);
+
+        var url = await BlobService.UploadFileAsync(stream, FotoSellado.Name);
+
+        var doc = new Documento
+        {
+            NombreArchivo = FotoSellado.Name,
+            BlobUrl = url,
+            Extension = Path.GetExtension(FotoSellado.Name),
+            FechaSubida = DateTime.Now,
+            TipoDocumento = DocumentType.FotoReciboSellado,
+            ReciboIngresoId = Modelo.Id
+        };
+
+        await DocumentoService.Crear(doc);
+
+        Mensaje = "Foto subida y recibo confirmado.";
+    }
+
+    private void Volver()
+    {
+        Nav.NavigateTo("/enterramiento");
+    }
+}
