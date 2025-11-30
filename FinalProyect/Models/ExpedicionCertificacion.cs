@@ -7,6 +7,8 @@ public class ExpedicionCertificacion
 {
     public int Id { get; set; }
 
+    public ProcessType TipoProceso { get; set; } = ProcessType.ExpedicionCertificacion;
+
     public string NombreSolicitante { get; set; }
     public string Cedula { get; set; }
     public string Telefono { get; set; }
@@ -33,6 +35,10 @@ public class ExpedicionCertificacion
     [Required]
     public int ReciboIngresoId { get; set; }
     public ReciboIngreso? ReciboIngreso { get; set; }
+
+    public string GetConcepto() => "Expedición de certificación";
+    public int GetMetros() => 0;
+
 }
 
 

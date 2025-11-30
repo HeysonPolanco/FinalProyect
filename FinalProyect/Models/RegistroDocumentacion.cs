@@ -7,6 +7,7 @@ public class RegistroDocumentacion
 {
     public int Id { get; set; }
 
+    public ProcessType TipoProceso { get; set; } = ProcessType.RegistroDocumentacion;
     public string NombreCompleto { get; set; }
     public string Cedula { get; set; }
     public string Telefono { get; set; }
@@ -32,4 +33,7 @@ public class RegistroDocumentacion
     [Required]
     public int ReciboIngresoId { get; set; } 
     public ReciboIngreso? ReciboIngreso { get; set; }
+
+    public string GetConcepto() => "Registro de documentación";
+    public int GetMetros() => 0;
 }
