@@ -1,5 +1,139 @@
-﻿<h3>DerechoConstruccionDetails</h3>
+﻿@page "/construccion/details/{Id:int}"
+@rendermode InteractiveServer
+
+@using FinalProyect.Models
+@using FinalProyect.Services
+
+@inject DerechoConstruccionService ConstruccionService
+@inject NavigationManager Nav
+
+<div class="fw-bold text-primary mb-4">Detalles del Derecho a Construcción</div>
+
+@if (Error != null)
+{
+    <div class="alert alert-danger">@Error</div>
+}
+
+@if (Modelo == null)
+{
+    <div>Cargando...</div>
+}
+else
+{
+    <div class="card shadow p-4">
+
+             @*DATOS DEL SOLICITANTE*@
+        <div class="text-primary mb-3">Datos del Solicitante</div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <strong>Nombre:</strong>
+                <div>@Modelo.Solicitante?.NombreCompleto</div>
+            </div>
+
+            <div class="col-md-4">
+                <strong>Cédula:</strong>
+                <div>@Modelo.Solicitante?.Cedula</div>
+            </div>
+
+            <div class="col-md-4">
+                <strong>Teléfono:</strong>
+                <div>@Modelo.Solicitante?.Telefono</div>
+            </div>
+        </div>
+
+        <hr />
+
+             @*FECHA & HORA*@
+        <div class="text-primary mb-3">Información del trámite</div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <strong>Fecha:</strong>
+                <div>@Modelo.Fecha.ToString("dd/MM/yyyy")</div>
+            </div>
+
+            <div class="col-md-4">
+                <strong>Hora:</strong>
+                <div>@Modelo.Hora.ToString(@"hh\:mm")</div>
+            </div>
+
+            <div class="col-md-4">
+                <strong>Monto:</strong>
+                <div>RD$ @Modelo.Monto</div>
+            </div>
+        </div>
+
+        <hr />
+
+             @*DOCUMENTO DEL INSPECTOR*@
+        <h5 class="text-primary mb-3">Recibo del Inspector</h5>
+
+        @if (Modelo.Documentos != null &&
+            Modelo.Documentos.Any(d => d.TipoDocumento == DocumentType.ReciboInspector))
+        {
+            var doc = Modelo.Documentos.First(d => d.TipoDocumento == DocumentType.ReciboInspector);
+
+            <div class="mb-2">
+                <strong>Archivo:</strong><br />
+                <a href="@doc.BlobUrl" target="_blank">
+                    @doc.NombreArchivo
+                </a>
+            </div>
+        }
+        else if (!string.IsNullOrWhiteSpace(Modelo.ReciboInspectorPath))
+        {
+            <div class="mb-2">
+                <strong>Archivo:</strong><br />
+                <a href="@Modelo.ReciboInspectorPath" target="_blank">
+                    Ver documento
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="text-muted">No hay documento subido.</div>
+        }
+
+        <hr />
+
+        <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-warning" @onclick="Editar">
+                <i class="fas fa-edit"></i> Editar
+            </button>
+
+            <button class="btn btn-secondary" @onclick="Volver">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
+        </div>
+
+    </div>
+}
 
 @code {
 
+    [Parameter] public int Id { get; set; }
+
+    private DerechoConstruccion? Modelo;
+    private string? Error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Modelo = await ConstruccionService.ObtenerPorId(Id);
+
+        if (Modelo == null)
+        {
+            Error = "No se encontró el registro solicitado.";
+        }
+    }
+
+    private void Editar()
+    {
+        Nav.NavigateTo($"/construccion/edit/{Id}");
+    }
+
+    private void Volver()
+    {
+        Nav.NavigateTo("/construccion");
+    }
 }
