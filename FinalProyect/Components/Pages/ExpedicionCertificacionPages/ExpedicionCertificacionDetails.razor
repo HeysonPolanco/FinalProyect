@@ -1,0 +1,69 @@
+﻿@page "/certificacion/details/{Id:int}"
+@rendermode InteractiveServer
+
+@using FinalProyect.Models
+@using FinalProyect.Services
+
+@inject ExpedicionCertificacionService CertService
+@inject NavigationManager Nav
+
+<div class="text-primary fw-bold mb-4">Detalle de la Certificación</div>
+
+@if (Modelo == null)
+{
+    <div class="alert alert-danger">No se encontró la certificación.</div>
+}
+else
+{
+    <div class="card shadow p-4">
+
+        <h5 class="text-primary">Datos del Solicitante</h5>
+        <p><b>Nombre:</b> @Modelo.NombreSolicitante</p>
+        <p><b>Cédula:</b> @Modelo.Cedula</p>
+        <p><b>Teléfono:</b> @Modelo.Telefono</p>
+
+        <hr />
+
+        <div class="text-primary">Datos del Fallecido</div>
+        <p><b>Información:</b> @Modelo.Contenido</p>
+
+        <hr />
+
+        <div class="text-primary">Información General</div>
+        <p><b>Estado:</b> @Modelo.Estado</p>
+        <p><b>Monto:</b> RD$ @Modelo.Monto.ToString("N2")</p>
+        <p><b>Fecha de Solicitud:</b> @Modelo.FechaSolicitud.ToString("dd/MM/yyyy")</p>
+
+        <hr />
+
+        <div class="d-flex gap-2">
+            <button class="btn btn-secondary" @onclick="Volver">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
+
+            <button class="btn btn-warning" @onclick="() => Editar(Modelo.Id)">
+                <i class="fas fa-edit"></i> Editar
+            </button>
+
+            <button class="btn btn-primary" @onclick="() => Carta(Modelo.Id)">
+                <i class="fas fa-file-alt"></i> Carta
+            </button>
+        </div>
+
+    </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private ExpedicionCertificacion? Modelo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Modelo = await CertService.ObtenerPorId(Id);
+    }
+
+    private void Volver() => Nav.NavigateTo("/certificacion");
+    private void Editar(int id) => Nav.NavigateTo($"/certificacion/edit/{id}");
+    private void Carta(int id) => Nav.NavigateTo($"/certificacion/carta/{id}");
+}

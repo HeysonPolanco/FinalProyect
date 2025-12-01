@@ -1,0 +1,186 @@
+﻿@page "/certificacion/edit/{Id:int}"
+@rendermode InteractiveServer
+
+@using FinalProyect.Models
+@using FinalProyect.Services
+
+@inject ExpedicionCertificacionService CertService
+@inject SolicitanteService SolicitanteService
+@inject NavigationManager Nav
+
+<div class="text-primary fw-bold mb-4">Editar Certificación de Enterramiento</div>
+
+@if (Error != null)
+{
+    <div class="alert alert-danger">@Error</div>
+}
+
+@if (Modelo == null)
+{
+    <div>Cargando...</div>
+}
+else
+{
+    <div class="card shadow p-4">
+
+        <EditForm FormName="EditCertForm" Model="@Modelo" OnValidSubmit="Guardar">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="text-primary mb-3">Datos del Solicitante</div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Nombre completo *</label>
+                <InputText class="form-control" @bind-Value="SolicitanteProceso.NombreCompleto" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Cédula *</label>
+                <InputText class="form-control" @bind-Value="SolicitanteProceso.Cedula" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Teléfono</label>
+                <InputText class="form-control" @bind-Value="SolicitanteProceso.Telefono" />
+            </div>
+
+            <hr />
+
+            <div class="text-primary mb-3">Datos del Fallecido</div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Nombre del fallecido *</label>
+                <InputText class="form-control" @bind-Value="NombreFallecido" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Cédula del fallecido *</label>
+                <InputText class="form-control" @bind-Value="CedulaFallecido" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Fecha de fallecimiento *</label>
+                <InputDate class="form-control" @bind-Value="FechaFallecimiento" />
+            </div>
+
+            <hr />
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Monto (RD$)</label>
+                <InputNumber class="form-control" @bind-Value="Modelo.Monto" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Estado</label>
+                <InputSelect class="form-control" @bind-Value="Modelo.Estado">
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Emitida">Emitida</option>
+                </InputSelect>
+            </div>
+
+            <hr />
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> Guardar cambios
+                </button>
+
+                <button class="btn btn-primary" @onclick="GenerarCarta">
+                    <i class="fas fa-file-alt"></i> Ver Carta
+                </button>
+
+                <button class="btn btn-secondary" @onclick="Volver">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+
+                <button class="btn btn-danger" @onclick="Eliminar">
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            </div>
+
+        </EditForm>
+
+    </div>
+}
+
+@code {
+
+    [Parameter] public int Id { get; set; }
+
+    private ExpedicionCertificacion? Modelo;
+    private Solicitante SolicitanteProceso = new();
+
+    private string NombreFallecido = "";
+    private string CedulaFallecido = "";
+    private DateTime FechaFallecimiento = DateTime.Today;
+
+    private string? Error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Modelo = await CertService.ObtenerPorId(Id);
+
+        if (Modelo == null)
+        {
+            Error = "No se encontró la certificación.";
+            return;
+        }
+
+        SolicitanteProceso = Modelo.Solicitante!;
+
+        ExtraerDatosDeContenido(Modelo.Contenido);
+    }
+
+    private void ExtraerDatosDeContenido(string contenido)
+    {
+
+        if (string.IsNullOrWhiteSpace(contenido))
+            return;
+
+        try
+        {
+            var partes = contenido.Split(',');
+
+            NombreFallecido = partes[0].Trim();
+
+            CedulaFallecido = partes[1]
+                .Replace("cédula", "")
+                .Replace("cedula", "")
+                .Replace(" ", "")
+                .Replace(".", "")
+                .Trim();
+
+            var fechaTxt = contenido.Split("falleció el")[1].Trim().TrimEnd('.');
+            FechaFallecimiento = DateTime.Parse(fechaTxt);
+        }
+        catch { }
+    }
+
+    private async Task Guardar()
+    {
+        try
+        {
+            await SolicitanteService.Actualizar(SolicitanteProceso);
+
+            Modelo.Contenido =
+                $"{NombreFallecido}, cédula {CedulaFallecido}, falleció el {FechaFallecimiento:dd/MM/yyyy}.";
+
+            await CertService.Actualizar(Modelo);
+
+            Nav.NavigateTo("/certificacion");
+        }
+        catch (Exception ex)
+        {
+            Error = $"Error al guardar cambios: {ex.Message}";
+        }
+    }
+
+    private async Task Eliminar()
+    {
+        await CertService.Eliminar(Id);
+        Nav.NavigateTo("/certificacion");
+    }
+
+    private void GenerarCarta() => Nav.NavigateTo($"/certificacion/carta/{Id}");
+    private void Volver() => Nav.NavigateTo("/certificacion");
+}
