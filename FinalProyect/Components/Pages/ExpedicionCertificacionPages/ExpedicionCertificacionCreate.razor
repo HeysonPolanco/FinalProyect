@@ -1,0 +1,123 @@
+﻿@page "/certificacion/create"
+@rendermode InteractiveServer
+
+@using FinalProyect.Models
+@using FinalProyect.Services
+@using Microsoft.AspNetCore.Identity
+@using FinalProyect.Data
+@using Microsoft.AspNetCore.Components.Forms
+
+@inject ExpedicionCertificacionService CertService
+@inject SolicitanteService SolicitanteService
+@inject NavigationManager Nav
+@inject UserManager<ApplicationUser> UserManager
+@inject AuthenticationStateProvider AuthProvider
+
+<div class="text-primary fw-bold mb-4">Nueva Certificación de Enterramiento</div>
+
+<div class="card shadow p-4">
+
+    <EditForm FormName="CrearCertForm" Model="@Modelo" OnValidSubmit="Guardar">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="text-primary mb-3">Datos del Solicitante</div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Nombre completo *</label>
+            <InputText class="form-control" @bind-Value="Modelo.NombreSolicitante" />
+            <ValidationMessage For="@(() => Modelo.NombreSolicitante)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Cédula *</label>
+            <InputText class="form-control" @bind-Value="Modelo.Cedula" />
+            <ValidationMessage For="@(() => Modelo.Cedula)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Teléfono</label>
+            <InputText class="form-control" @bind-Value="Modelo.Telefono" />
+        </div>
+
+        <hr />
+
+        <div class="text-primary mb-3">Datos del Fallecido</div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Nombre del fallecido *</label>
+            <InputText class="form-control" @bind-Value="NombreFallecido" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Cédula del fallecido *</label>
+            <InputText class="form-control" @bind-Value="CedulaFallecido" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Fecha de fallecimiento *</label>
+            <InputDate class="form-control" @bind-Value="FechaFallecimiento" />
+        </div>
+
+        <hr />
+
+        <div class="text-primary mb-3">Monto</div>
+
+        <div class="mb-3">
+            <InputNumber class="form-control" @bind-Value="Modelo.Monto" />
+        </div>
+
+        <hr />
+
+        <button class="btn btn-success">
+            <i class="fas fa-save"></i> Guardar y generar recibo
+        </button>
+
+    </EditForm>
+
+</div>
+
+
+@code {
+
+    private ExpedicionCertificacion Modelo { get; set; } = new();
+
+
+    private string NombreFallecido { get; set; } = "";
+    private string CedulaFallecido { get; set; } = "";
+    private DateTime FechaFallecimiento { get; set; } = DateTime.Today;
+
+    private async Task<string> GetUserId()
+    {
+        var auth = await AuthProvider.GetAuthenticationStateAsync();
+        return auth.User.Identity?.IsAuthenticated == true
+            ? UserManager.GetUserId(auth.User)
+            : "";
+    }
+
+    private async Task Guardar()
+    {
+        Modelo.UsuarioId = await GetUserId();
+
+        var solicitante = new Solicitante
+        {
+            NombreCompleto = Modelo.NombreSolicitante,
+            Cedula = Modelo.Cedula,
+            Telefono = Modelo.Telefono
+        };
+
+        await SolicitanteService.Crear(solicitante);
+        Modelo.SolicitanteId = solicitante.Id;
+
+        Modelo.TipoCertificacion = "Certificación de Enterramiento";
+
+        Modelo.FechaSolicitud = DateTime.Now;
+
+        Modelo.Contenido =
+            $"{NombreFallecido}, cédula {CedulaFallecido}, falleció el {FechaFallecimiento:dd/MM/yyyy}.";
+
+        await CertService.Crear(Modelo);
+
+        Nav.NavigateTo($"/recibo/create/{Modelo.Id}?proceso=certificacion");
+    }
+}

@@ -1,0 +1,96 @@
+﻿@page "/enterramiento/edit/{Id:int}"
+@using FinalProyect.Models
+ @rendermode InteractiveServer
+@inject FinalProyect.Services.DerechoEnterramientoService EnterramientoService
+@inject FinalProyect.Services.SolicitanteService SolicitanteService
+@inject NavigationManager Nav
+
+<h3 class="mb-4 text-primary fw-bold">Editar Derecho a Enterramiento</h3>
+
+@if (Modelo == null)
+{
+    <div class="alert alert-info">Cargando...</div>
+}
+else
+{
+    <EditForm Model="@Modelo" OnValidSubmit="Guardar">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="card shadow-sm p-4">
+
+            <h5 class="text-primary mb-3">Datos del Solicitante</h5>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Nombre</label>
+                <input class="form-control" @bind="Modelo.Solicitante.NombreCompleto" disabled />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Cédula</label>
+                <input class="form-control" @bind="Modelo.Solicitante.Cedula" disabled />
+            </div>
+
+            <hr />
+
+            <h5 class="text-primary mb-3">Datos del Fallecido</h5>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Nombre del fallecido</label>
+                <input class="form-control" @bind="Modelo.NombreFallecido" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Cédula del fallecido</label>
+                <input class="form-control" @bind="Modelo.CedulaFallecido" />
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold">Fecha</label>
+                    <input type="date" class="form-control" @bind="Modelo.Fecha" />
+                </div>
+
+                <div class="col-md-4">
+                    <strong>Hora:</strong> @Modelo.Hora.ToString(@"hh\:mm")
+                </div>
+            </div>
+
+            <button class="btn btn-warning mt-3">
+                <i class="fas fa-save"></i> Guardar Cambios
+            </button>
+
+            <button class="btn btn-secondary mt-3 ms-2" @onclick="Volver">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
+
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private DerechoEnterramiento? Modelo;
+    private string HoraTexto = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        Modelo = await EnterramientoService.ObtenerPorId(Id);
+
+        if (Modelo != null)
+        {
+            HoraTexto = Modelo.Hora.ToString(@"hh\:mm");
+        }
+    }
+
+    private async Task Guardar()
+    {
+        if (!string.IsNullOrWhiteSpace(HoraTexto))
+            Modelo!.Hora = TimeSpan.Parse(HoraTexto);
+
+        await EnterramientoService.Actualizar(Modelo!);
+
+        Nav.NavigateTo("/enterramiento");
+    }
+
+    private void Volver() => Nav.NavigateTo("/enterramiento");
+}

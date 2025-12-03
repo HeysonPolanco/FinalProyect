@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FinalProyect.Data;
+using System;
 using System.ComponentModel.DataAnnotations;
 namespace FinalProyect.Models;
 
@@ -19,4 +20,7 @@ public class ConsultaIngresos
     [MaxLength(8, ErrorMessage = "The Name must not exceed 8 characters.")]
     public DateTime FechaIngreso { get; set; }
 
+    [Required]
+    public int ReciboIngresoId { get; set; }      
+    public ReciboIngreso? ReciboIngreso { get; set; }
 }
