@@ -62,7 +62,7 @@ public class SolicitanteService
         bool creado = await Crear(data);
 
         if (!creado)
-            throw new Exception("No se pudo crear el solicitante.");
+            throw new InvalidOperationException("No se pudo crear el solicitante.");
 
         return data.Id;
     }
