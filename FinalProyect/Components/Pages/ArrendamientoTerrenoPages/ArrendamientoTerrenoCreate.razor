@@ -123,7 +123,7 @@
 
     private async Task<string> GetUserId()
     {
-        var auth = await AuthProvider.GetAuthenticationStateAsync();
+        var auth = await AuthState.GetAuthenticationStateAsync();
         var user = auth.User;
 
         if (user.Identity?.IsAuthenticated == true)
