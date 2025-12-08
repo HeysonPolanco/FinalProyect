@@ -7,7 +7,7 @@ html, body {
     height: 100%;
     margin: 0;
     overflow: hidden;
-    background-color: var(--bone-white) !important;
+    background-color: #c2c1be;
 }
 
 a, .btn-link {
@@ -70,7 +70,7 @@ h1:focus {
 .page-wrapper {
     display: flex;
     height: 100vh;
-    background-color: var(--bone-white) !important;
+    background-color: #c2c1be;
     overflow: hidden;
 }
 
