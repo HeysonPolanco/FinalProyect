@@ -46,5 +46,6 @@ public class RegistroDocumentacion
 
     public ICollection<Documento>? Documentos { get; set; }
 
-    public const string Concepto = "Registro de documentación";
+    public static string GetConcepto() => "Registro de documentación";
+
 }
