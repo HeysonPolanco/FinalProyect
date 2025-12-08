@@ -116,7 +116,7 @@ h1:focus {
 
     .nav-link:hover {
         background-color: rgba(255, 255, 255, 0.2);
-        color: white !important;
+        color: #c2c1be;
     }
 
 .nav-link-text {
