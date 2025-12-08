@@ -4,7 +4,6 @@ using FinalProyect.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,11 +11,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinalProyect.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251205050601_ReciboNotariosNullable")]
-    partial class ReciboNotariosNullable
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,7 +42,8 @@ namespace FinalProyect.Migrations
 
                     b.Property<string>("NombreFallecido")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<int?>("ReciboIngresoId")
                         .HasColumnType("int");
@@ -79,19 +77,9 @@ namespace FinalProyect.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Cedula")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Correo")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -100,22 +88,11 @@ namespace FinalProyect.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("EsAdmin")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Idioma")
-                        .HasMaxLength(11)
-                        .HasColumnType("nvarchar(11)");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NombreCompleto")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -138,15 +115,6 @@ namespace FinalProyect.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Sexo")
-                        .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("nvarchar(11)");
-
-                    b.Property<string>("Telefono")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -165,6 +133,40 @@ namespace FinalProyect.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "100",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "",
+                            Email = "admin@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@GMAIL.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBLjsj0D0GttEMej0zSgKCenZ2DaEuFjLZiPDbUc9In0hqgtIBAV4OJVc96y4lMmoA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "",
+                            TwoFactorEnabled = false,
+                            UserName = "admin"
+                        },
+                        new
+                        {
+                            Id = "200",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "",
+                            Email = "tesorera@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "TESORERA@GMAIL.COM",
+                            NormalizedUserName = "TESORERA",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDh/ppk82Pqm7B8eH4Id2RuZITvBXW+AwQ2DOeXanbk92D3IblAo/ARFeZEOqAcjPw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "",
+                            TwoFactorEnabled = false,
+                            UserName = "tesorera"
+                        });
                 });
 
             modelBuilder.Entity("FinalProyect.Models.ArrendamientoTerreno", b =>
@@ -198,7 +200,8 @@ namespace FinalProyect.Migrations
 
                     b.Property<string>("Ubicacion")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("UsuarioId")
                         .IsRequired()
@@ -228,11 +231,9 @@ namespace FinalProyect.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("FechaIngreso")
-                        .HasMaxLength(8)
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("MontoAcumulado")
-                        .HasMaxLength(100)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ReciboIngresoId")
@@ -240,11 +241,9 @@ namespace FinalProyect.Migrations
 
                     b.Property<string>("TipoIngreso")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Valor")
-                        .HasMaxLength(8)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -372,7 +371,8 @@ namespace FinalProyect.Migrations
 
                     b.Property<string>("Contenido")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Estado")
                         .IsRequired()
@@ -533,7 +533,8 @@ namespace FinalProyect.Migrations
 
                     b.Property<string>("NombreCompleto")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<int?>("ReciboIngresoId")
                         .HasColumnType("int");
@@ -580,17 +581,16 @@ namespace FinalProyect.Migrations
 
                     b.Property<string>("Cedula")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NombreCompleto")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Telefono")
                         .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("nvarchar(11)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -622,6 +622,22 @@ namespace FinalProyect.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            ConcurrencyStamp = "",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            ConcurrencyStamp = "",
+                            Name = "Tesorera",
+                            NormalizedName = "TESORERA"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -728,6 +744,18 @@ namespace FinalProyect.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "100",
+                            RoleId = "1"
+                        },
+                        new
+                        {
+                            UserId = "200",
+                            RoleId = "2"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -923,7 +951,7 @@ namespace FinalProyect.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("FinalProyect.Data.ApplicationUser", "Usuario")
-                        .WithMany("Historiales")
+                        .WithMany()
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1073,11 +1101,6 @@ namespace FinalProyect.Migrations
             modelBuilder.Entity("DerechoEnterramiento", b =>
                 {
                     b.Navigation("Documentos");
-                });
-
-            modelBuilder.Entity("FinalProyect.Data.ApplicationUser", b =>
-                {
-                    b.Navigation("Historiales");
                 });
 
             modelBuilder.Entity("FinalProyect.Models.ArrendamientoTerreno", b =>
