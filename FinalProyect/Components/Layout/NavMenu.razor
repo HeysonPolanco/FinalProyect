@@ -1,11 +1,30 @@
 ﻿@implements IDisposable
 @inject NavigationManager NavigationManager
 
-<div class="material-sidebar d-flex flex-column flex-shrink-0 p-3 text-white">
+<style>
+    .sidebar-navy {
+        background-color: #171840;
+        background-image: linear-gradient(180deg, #171840 0%, #0b0c26 100%);
+    }
+
+    .icon-glass {
+        background-color: rgba(255,255,255,0.15) !important;
+        color: white !important;
+        box-shadow: none !important;
+    }
+
+    ::deep .nav-link.active .icon-glass {
+        background-image: linear-gradient(195deg, #49a3f1 0%, #1A73E8 100%) !important;
+        background-color: transparent !important;
+        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(0, 188, 212, 0.4) !important;
+    }
+</style>
+
+<div class="material-sidebar sidebar-navy d-flex flex-column flex-shrink-0 p-3 text-white">
 
     <a href="/" class="d-flex align-items-center mb-4 mt-2 text-white text-decoration-none px-2">
         <div class="icon-box bg-white text-dark text-center border-radius-xl me-3 d-flex align-items-center justify-content-center shadow-sm">
-            <i class="fas fa-landmark fs-5"></i>
+            <i class="fas fa-landmark fs-5" style="color: #171840;"></i>
         </div>
         <div class="d-flex flex-column justify-content-center">
             <span class="fs-5 fw-bold font-monospace">Tesorería</span>
@@ -19,7 +38,7 @@
 
         <li class="nav-item mb-2">
             <NavLink class="nav-link text-white d-flex align-items-center py-2 px-3" href="" Match="NavLinkMatch.All">
-                <div class="icon-box bg-gradient-dark text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
+                <div class="icon-box icon-glass text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
                     <i class="fas fa-home"></i>
                 </div>
                 <span class="nav-link-text ms-2 fw-normal">Inicio</span>
@@ -32,7 +51,7 @@
 
         <li class="nav-item mb-2">
             <NavLink class="nav-link text-white d-flex align-items-center py-2 px-3" href="enterramiento">
-                <div class="icon-box bg-gradient-dark text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
+                <div class="icon-box icon-glass text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
                     <i class="fas fa-cross"></i>
                 </div>
                 <span class="nav-link-text ms-2 text-wrap lh-sm">Derecho Enterramiento</span>
@@ -41,7 +60,7 @@
 
         <li class="nav-item mb-2">
             <NavLink class="nav-link text-white d-flex align-items-center py-2 px-3" href="construccion">
-                <div class="icon-box bg-gradient-dark text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
+                <div class="icon-box icon-glass text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
                     <i class="fas fa-tools"></i>
                 </div>
                 <span class="nav-link-text ms-2 text-wrap lh-sm">Derecho Construcción</span>
@@ -50,7 +69,7 @@
 
         <li class="nav-item mb-2">
             <NavLink class="nav-link text-white d-flex align-items-center py-2 px-3" href="registrodocumentacion">
-                <div class="icon-box bg-gradient-dark text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
+                <div class="icon-box icon-glass text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
                     <i class="fas fa-file-alt"></i>
                 </div>
                 <span class="nav-link-text ms-2 text-wrap lh-sm">Registro Documentación</span>
@@ -59,7 +78,7 @@
 
         <li class="nav-item mb-2">
             <NavLink class="nav-link text-white d-flex align-items-center py-2 px-3" href="certificacion">
-                <div class="icon-box bg-gradient-dark text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
+                <div class="icon-box icon-glass text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
                     <i class="fas fa-file-signature"></i>
                 </div>
                 <span class="nav-link-text ms-2">Certificaciones</span>
@@ -68,7 +87,7 @@
 
         <li class="nav-item mb-2">
             <NavLink class="nav-link text-white d-flex align-items-center py-2 px-3" href="arrendamiento">
-                <div class="icon-box bg-gradient-dark text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
+                <div class="icon-box icon-glass text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
                     <i class="fas fa-vector-square"></i>
                 </div>
                 <span class="nav-link-text ms-2 text-wrap lh-sm">Arrendamiento Terreno</span>
@@ -77,7 +96,7 @@
 
         <li class="nav-item mb-2">
             <NavLink class="nav-link text-white d-flex align-items-center py-2 px-3" href="consultaingreso">
-                <div class="icon-box bg-gradient-dark text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
+                <div class="icon-box icon-glass text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
                     <i class="fas fa-chart-line"></i>
                 </div>
                 <span class="nav-link-text ms-2 text-wrap lh-sm">Consulta Ingresos</span>
@@ -86,7 +105,7 @@
 
         <li class="nav-item mb-2">
             <NavLink class="nav-link text-white d-flex align-items-center py-2 px-3" href="historial">
-                <div class="icon-box bg-gradient-dark text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
+                <div class="icon-box icon-glass text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
                     <i class="fas fa-history"></i>
                 </div>
                 <span class="nav-link-text ms-2">Historial</span>
@@ -101,7 +120,7 @@
             <Authorized>
                 <li class="nav-item mb-2">
                     <NavLink class="nav-link text-white d-flex align-items-center py-2 px-3" href="Account/Manage">
-                        <div class="icon-box bg-gradient-dark text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
+                        <div class="icon-box icon-glass text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
                             <i class="fas fa-user-circle"></i>
                         </div>
                         <span class="nav-link-text ms-2">@context.User.Identity?.Name</span>
@@ -112,7 +131,7 @@
                         <AntiforgeryToken />
                         <input type="hidden" name="ReturnUrl" value="@currentUrl" />
                         <button type="submit" class="nav-link text-white d-flex align-items-center w-100 border-0 bg-transparent text-start py-2 px-3">
-                            <div class="icon-box bg-gradient-dark text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
+                            <div class="icon-box icon-glass text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
                                 <i class="fas fa-sign-out-alt"></i>
                             </div>
                             <span class="nav-link-text ms-2">Cerrar Sesión</span>
@@ -123,7 +142,7 @@
             <NotAuthorized>
                 <li class="nav-item mb-2">
                     <NavLink class="nav-link text-white d-flex align-items-center py-2 px-3" href="Account/Login">
-                        <div class="icon-box bg-gradient-dark text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
+                        <div class="icon-box icon-glass text-center border-radius-md me-2 d-flex align-items-center justify-content-center">
                             <i class="fas fa-key"></i>
                         </div>
                         <span class="nav-link-text ms-2">Iniciar Sesión</span>
