@@ -12,14 +12,13 @@ public class DerechoConstruccion
     public string UsuarioId { get; set; } = string.Empty;
     public ApplicationUser Usuario { get; set; }
 
-    [Required]
     public int SolicitanteId { get; set; }
     public Solicitante Solicitante { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "La fecha es obligatoria.")]
     public DateTime Fecha { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "La hora es obligatoria.")]
     public TimeSpan Hora { get; set; }
 
     public decimal Monto { get; set; }

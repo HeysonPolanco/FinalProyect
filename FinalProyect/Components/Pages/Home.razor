@@ -26,6 +26,7 @@
         overflow: hidden;
     }
 
+    /* Fondos de las tarjetas */
     .card-navy {
         background-color: var(--color-navy);
         color: white;
@@ -47,6 +48,7 @@
         border: 1px solid rgba(0,0,0,0.05);
     }
 
+    /* Iconos estilo cristal */
     .icon-glass {
         width: 48px;
         height: 48px;
@@ -65,6 +67,7 @@
         color: var(--color-navy);
     }
 
+    /* Banner de bienvenida */
     .welcome-banner {
         background-color: white;
         border-radius: 12px;
@@ -109,7 +112,7 @@
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <p class="small text-uppercase mb-1 opacity-75 fw-bold">Procesos Hoy</p>
-                        <h2 class="mb-0 fw-bold">@ProcesosHoy</h2>
+                        <h2 class="mb-0 fw-bold" style="color: #000000;">@ProcesosHoy</h2>
                     </div>
                     <div class="icon-glass">
                         <i class="fas fa-file-invoice"></i>
@@ -126,7 +129,7 @@
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <p class="small text-uppercase mb-1 opacity-75 fw-bold">Recaudado Hoy</p>
-                        <h2 class="mb-0 fw-bold">RD$ @DineroHoy.ToString("N0")</h2>
+                        <h2 class="mb-0 fw-bold" style="color: #000000;">RD$ @DineroHoy.ToString("N0")</h2>
                     </div>
                     <div class="icon-glass">
                         <i class="fas fa-coins"></i>
@@ -143,7 +146,7 @@
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <p class="small text-uppercase mb-1 opacity-75 fw-bold">Documentos</p>
-                        <h2 class="mb-0 fw-bold">@DocumentosTotal</h2>
+                        <h2 class="mb-0 fw-bold" style="color: #000000;">@DocumentosTotal</h2>
                     </div>
                     <div class="icon-glass">
                         <i class="fas fa-folder-open"></i>
@@ -160,7 +163,7 @@
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <p class="small text-uppercase mb-1 text-secondary fw-bold">Solicitantes</p>
-                        <h2 class="mb-0 fw-bold" style="color: #171840;">@TotalSolicitantes</h2>
+                        <h2 class="mb-0 fw-bold" style="color: #000000;">@TotalSolicitantes</h2>
                     </div>
                     <div class="icon-glass">
                         <i class="fas fa-users"></i>

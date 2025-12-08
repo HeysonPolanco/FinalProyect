@@ -4,6 +4,7 @@ using FinalProyect.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinalProyect.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251208071911_ModelCorrectionCedula")]
+    partial class ModelCorrectionCedula
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,6 +80,10 @@ namespace FinalProyect.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Cedula")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -93,6 +100,11 @@ namespace FinalProyect.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NombreCompleto")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -113,6 +125,10 @@ namespace FinalProyect.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -139,15 +155,18 @@ namespace FinalProyect.Migrations
                         {
                             Id = "100",
                             AccessFailedCount = 0,
+                            Cedula = "40240363652",
                             ConcurrencyStamp = "",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
+                            NombreCompleto = "Admin",
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
                             PasswordHash = "AQAAAAIAAYagAAAAEB5HQ3ZRcW9d0rxz7qoB+j5M2j7ZpPSaVLuJC3doGjEYpwHIYCt0Wxj1i5JRKZzlFQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
+                            Telefono = "8095873414",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         },
@@ -155,15 +174,18 @@ namespace FinalProyect.Migrations
                         {
                             Id = "200",
                             AccessFailedCount = 0,
+                            Cedula = "40240365632",
                             ConcurrencyStamp = "",
                             Email = "tesorera@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
+                            NombreCompleto = "Tesorera",
                             NormalizedEmail = "TESORERA@GMAIL.COM",
                             NormalizedUserName = "TESORERA",
                             PasswordHash = "AQAAAAIAAYagAAAAEDh/ppk82Pqm7B8eH4Id2RuZITvBXW+AwQ2DOeXanbk92D3IblAo/ARFeZEOqAcjPw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
+                            Telefono = "8297438765",
                             TwoFactorEnabled = false,
                             UserName = "tesorera"
                         });
@@ -951,7 +973,7 @@ namespace FinalProyect.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("FinalProyect.Data.ApplicationUser", "Usuario")
-                        .WithMany()
+                        .WithMany("Historiales")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1101,6 +1123,11 @@ namespace FinalProyect.Migrations
             modelBuilder.Entity("DerechoEnterramiento", b =>
                 {
                     b.Navigation("Documentos");
+                });
+
+            modelBuilder.Entity("FinalProyect.Data.ApplicationUser", b =>
+                {
+                    b.Navigation("Historiales");
                 });
 
             modelBuilder.Entity("FinalProyect.Models.ArrendamientoTerreno", b =>

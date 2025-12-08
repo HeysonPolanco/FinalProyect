@@ -11,18 +11,22 @@ public class ArrendamientoTerreno : ISolicitable
     public string UsuarioId { get; set; } = string.Empty;
     public ApplicationUser Usuario { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "El solicitante es obligatorio.")]
     public int SolicitanteId { get; set; }
     public Solicitante Solicitante { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "La fecha de inicio es obligatoria.")]
     public DateTime FechaInicio { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "La fecha de finalización es obligatoria.")]
     public DateTime FechaFin { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "Debe especificar los metros cuadrados.")]
+    [Range(1, int.MaxValue, ErrorMessage = "Los metros cuadrados deben ser mayores a 0.")]
     public int MetrosCuadrados { get; set; }
+
+    [Required(ErrorMessage = "Debe indicar la ubicación del terreno.")]
+    [MaxLength(150, ErrorMessage = "La ubicación no puede exceder los 150 caracteres.")]
     public string Ubicacion { get; set; } = "";
 
     public bool NotificarVencimiento { get; set; }
