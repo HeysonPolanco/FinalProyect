@@ -28,8 +28,8 @@ public class DerechoConstruccion
     public int? ReciboIngresoId { get; set; }
     public ReciboIngreso? ReciboIngreso { get; set; }
 
-    public string GetConcepto() => "Derecho de construcción";
-    public int GetMetros() => 0;
+    public static string GetConcepto() => "Derecho de construcción";
+    public static int GetMetros() => 0;
 
     public ICollection<Documento>? Documentos { get; set; }
 }
