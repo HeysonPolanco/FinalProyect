@@ -1,5 +1,6 @@
 ﻿using FinalProyect.Data;
 using FinalProyect.Models;
+using System.ComponentModel.DataAnnotations;
 
 public class DerechoEnterramiento
 {
@@ -12,10 +13,19 @@ public class DerechoEnterramiento
     public int SolicitanteId { get; set; }
     public Solicitante Solicitante { get; set; }
 
+    [Required(ErrorMessage = "El nombre del fallecido es obligatorio.")]
+    [MaxLength(150)]
     public string NombreFallecido { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "La cédula del fallecido es obligatoria.")]
+    [RegularExpression(@"^[0-9]{3}[- ]?[0-9]{7}[- ]?[0-9]{1}$",
+        ErrorMessage = "La cédula no es válida.")]
     public string CedulaFallecido { get; set; } = string.Empty;
 
+    [Required(ErrorMessage = "La fecha es obligatoria.")]
     public DateTime Fecha { get; set; }
+
+    [Required(ErrorMessage = "La hora es obligatoria.")]
     public TimeSpan Hora { get; set; }
 
     public int? ReciboIngresoId { get; set; }
